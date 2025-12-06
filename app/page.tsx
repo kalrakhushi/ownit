@@ -3,6 +3,7 @@
 import { useState } from "react";
 import TogglePanel from "./components/TogglePanel";
 import Section from "./components/Section";
+import DataUploader from "./components/DataUploader";
 
 export default function Home() {
   const [features, setFeatures] = useState({
@@ -31,7 +32,11 @@ export default function Home() {
       <TogglePanel onToggleChange={handleToggleChange} />
 
       <Section title="Dashboard" visible={features.dashboard}>
-        <p className="text-gray-600">📊 Charts, sleep/activity overview will live here.</p>
+        <DataUploader onDataLoaded={(data) => {
+          console.log("Parsed CSV Data:", data); // TEMP — confirm upload works
+        }} />
+
+        <p className="text-gray-600 mt-4">📊 Data loaded will appear here soon.</p>
       </Section>
 
       <Section title="Streak Tracker" visible={features.streaks}>
