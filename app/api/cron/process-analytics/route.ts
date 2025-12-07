@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { analyticsQueue } from '@/lib/queue'
 import { db } from '@/lib/db'
 import { healthRecords } from '@/drizzle/schema.postgres'
+import { desc } from 'drizzle-orm'
+import { detectAllPatterns } from '@/lib/pattern-detection'
+import { invalidateCache } from '@/lib/redis'
 
+// Cron job to process analytics and refresh caches
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -10,33 +13,37 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Fetch users who need analytics processing
-    // For now, process for all users with recent data
+    // Fetch recent health records
     const recentData = await db
       .select()
       .from(healthRecords)
       .orderBy(desc(healthRecords.date))
       .limit(100)
 
-    // Group by user (when you have user IDs)
-    const userIds = ['default'] // TODO: Replace with actual user IDs
-
-    for (const userId of userIds) {
-      await analyticsQueue.add('analyze', {
-        userId,
-        data: recentData,
+    if (recentData.length === 0) {
+      return NextResponse.json({ 
+        success: true,
+        message: 'No data to process'
       })
     }
 
+    // Run pattern detection
+    const patterns = detectAllPatterns(recentData)
+
+    // Invalidate caches to force refresh
+    await invalidateCache('analytics:patterns')
+    await invalidateCache('analytics:predictions:all:14')
+
     return NextResponse.json({ 
       success: true,
-      queued: userIds.length,
-      message: 'Analytics processing queued successfully'
+      recordsProcessed: recentData.length,
+      patternsDetected: patterns.length,
+      message: 'Analytics processing completed'
     })
   } catch (error) {
     console.error('Cron error:', error)
     return NextResponse.json({ 
-      error: 'Failed to queue analytics processing',
+      error: 'Failed to process analytics',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }
