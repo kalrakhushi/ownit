@@ -1,9 +1,35 @@
 import { Redis } from '@upstash/redis'
 
-// Initialize Upstash Redis client
-export const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || '',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
+// Lazy initialization - only connect when actually used (at runtime, not build time)
+let redisInstance: Redis | null = null
+
+function getRedis(): Redis {
+  if (!redisInstance) {
+    const url = process.env.UPSTASH_REDIS_REST_URL
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN
+    
+    if (!url || !token) {
+      console.warn('Redis environment variables not set. Caching will be disabled.')
+      // Create a mock Redis instance that fails gracefully
+      redisInstance = new Redis({
+        url: '',
+        token: '',
+      })
+    } else {
+      redisInstance = new Redis({
+        url,
+        token,
+      })
+    }
+  }
+  return redisInstance
+}
+
+// Export lazy getter
+export const redis = new Proxy({} as Redis, {
+  get(_target, prop) {
+    return getRedis()[prop as keyof Redis]
+  }
 })
 
 // Cache TTL constants (in seconds)

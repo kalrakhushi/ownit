@@ -22,8 +22,13 @@ export async function calculateStreaks() {
   // Get unique dates (normalize to YYYY-MM-DD format)
   const activeDates = new Set<string>()
   records.forEach(record => {
-    const dateStr = record.date.split('T')[0] // Extract YYYY-MM-DD
-    activeDates.add(dateStr)
+    // Extract YYYY-MM-DD from date string (handle both ISO format and plain YYYY-MM-DD)
+    const dateStr = typeof record.date === 'string' 
+      ? (record.date.includes('T') ? record.date.split('T')[0] : record.date.split(' ')[0])
+      : record.date
+    if (dateStr && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      activeDates.add(dateStr)
+    }
   })
 
   const sortedDates = Array.from(activeDates).sort()

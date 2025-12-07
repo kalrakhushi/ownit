@@ -94,21 +94,31 @@ export async function POST(request: NextRequest) {
     // Insert records
     const createdRecords = await db.insert(healthRecords).values(recordsToInsert).returning()
     
-    // Update streaks after adding new records
-    await updateStreaks()
+    // Update streaks after adding new records (don't fail if this errors)
+    try {
+      await updateStreaks()
+    } catch (streakError: any) {
+      console.error('Error updating streaks (non-critical):', streakError?.message)
+      // Continue even if streak update fails
+    }
     
-    // Invalidate relevant caches when new data is added
-    await Promise.all([
-      invalidateCache(cacheKeys.healthRecords()),
-      invalidateCache('analytics:patterns'),
-      invalidateCache(cacheKeys.streaks()),
-      // Invalidate all prediction caches (they have dynamic keys)
-      invalidateCache('analytics:predictions:all:14'),
-      invalidateCache('analytics:predictions:steps:14'),
-      invalidateCache('analytics:predictions:sleep:14'),
-      invalidateCache('analytics:predictions:calories:14'),
-      invalidateCache('analytics:predictions:weight:14'),
-    ])
+    // Invalidate relevant caches when new data is added (don't fail if this errors)
+    try {
+      await Promise.all([
+        invalidateCache(cacheKeys.healthRecords()),
+        invalidateCache('analytics:patterns'),
+        invalidateCache(cacheKeys.streaks()),
+        // Invalidate all prediction caches (they have dynamic keys)
+        invalidateCache('analytics:predictions:all:14'),
+        invalidateCache('analytics:predictions:steps:14'),
+        invalidateCache('analytics:predictions:sleep:14'),
+        invalidateCache('analytics:predictions:calories:14'),
+        invalidateCache('analytics:predictions:weight:14'),
+      ])
+    } catch (cacheError: any) {
+      console.error('Error invalidating cache (non-critical):', cacheError?.message)
+      // Continue even if cache invalidation fails
+    }
     
     // Track analytics event (on server, we'll use a marker in response)
     // Client will track the actual event
