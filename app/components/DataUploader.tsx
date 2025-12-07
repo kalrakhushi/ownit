@@ -21,7 +21,7 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
     protein: "",
   });
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -30,13 +30,32 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
     Papa.parse(file, {
       header: true,
       dynamicTyping: true,
-      complete: (result) => {
-        onDataLoaded(result.data, file.name);
+      complete: async (result) => {
+        try {
+          // Save to database
+          const response = await fetch('/api/health-records', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(result.data),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to save data to database');
+          }
+
+          const savedData = await response.json();
+          onDataLoaded(Array.isArray(savedData) ? savedData : [savedData], file.name);
+        } catch (error) {
+          console.error('Error saving CSV data:', error);
+          alert('Failed to save data to database. Please try again.');
+        }
       },
     });
   };
 
-  const handleQuickSubmit = (e: React.FormEvent) => {
+  const handleQuickSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Convert quick entry to array format (single record)
@@ -50,18 +69,36 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
     if (quickEntry.calories) entry.calories = parseInt(quickEntry.calories);
     if (quickEntry.protein) entry.protein = parseFloat(quickEntry.protein);
 
-    // Add to existing data or create new array
-    onDataLoaded([entry], "quick-entry");
-    
-    // Reset form (keep date)
-    setQuickEntry({
-      date: new Date().toISOString().split("T")[0],
-      weight: "",
-      steps: "",
-      sleep: "",
-      calories: "",
-      protein: "",
-    });
+    try {
+      // Save to database
+      const response = await fetch('/api/health-records', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(entry),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save data to database');
+      }
+
+      const savedEntry = await response.json();
+      onDataLoaded([savedEntry], "quick-entry");
+      
+      // Reset form (keep date)
+      setQuickEntry({
+        date: new Date().toISOString().split("T")[0],
+        weight: "",
+        steps: "",
+        sleep: "",
+        calories: "",
+        protein: "",
+      });
+    } catch (error) {
+      console.error('Error saving quick entry:', error);
+      alert('Failed to save entry to database. Please try again.');
+    }
   };
 
   return (

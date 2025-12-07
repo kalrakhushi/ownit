@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TogglePanel from "./components/TogglePanel";
 import Section from "./components/Section";
 import DataUploader from "./components/DataUploader";
@@ -19,22 +19,67 @@ export default function Home() {
   // Store uploaded health data - shared across all features
   const [healthData, setHealthData] = useState<any[]>([]);
   const [dataFileName, setDataFileName] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load data from database on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await fetch('/api/health-records');
+        if (response.ok) {
+          const data = await response.json();
+          setHealthData(data);
+          if (data.length > 0) {
+            setDataFileName('Database');
+          }
+        }
+      } catch (error) {
+        console.error('Error loading health data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const handleToggleChange = (feature: string, enabled: boolean) => {
     setFeatures(prev => ({ ...prev, [feature]: enabled }));
   };
 
-  const handleDataLoaded = (data: any[], fileName: string) => {
-    if (fileName === "quick-entry") {
-      // Append quick entries to existing data
-      setHealthData(prev => [...prev, ...data]);
-      setDataFileName("Quick entries");
-    } else {
-      // CSV uploads replace existing data
-      setHealthData(data);
-      setDataFileName(fileName);
+  const handleDataLoaded = async (data: any[], fileName: string) => {
+    // Reload all data from database to ensure consistency
+    try {
+      const response = await fetch('/api/health-records');
+      if (response.ok) {
+        const allData = await response.json();
+        setHealthData(allData);
+        if (fileName === "quick-entry") {
+          setDataFileName("Database");
+        } else {
+          setDataFileName(fileName);
+        }
+      } else {
+        // Fallback to local state if API fails
+        if (fileName === "quick-entry") {
+          setHealthData(prev => [...prev, ...data]);
+          setDataFileName("Quick entries");
+        } else {
+          setHealthData(data);
+          setDataFileName(fileName);
+        }
+      }
+    } catch (error) {
+      console.error('Error reloading data:', error);
+      // Fallback to local state
+      if (fileName === "quick-entry") {
+        setHealthData(prev => [...prev, ...data]);
+        setDataFileName("Quick entries");
+      } else {
+        setHealthData(data);
+        setDataFileName(fileName);
+      }
     }
-    console.log("Data loaded:", data); // TEMP — confirm upload works
   };
 
   return (
@@ -52,11 +97,14 @@ export default function Home() {
       <Section title="Dashboard" visible={features.dashboard}>
         <DataUploader onDataLoaded={handleDataLoaded} />
 
-        {healthData.length > 0 && (
+        {isLoading ? (
+          <p className="text-gray-600 mt-4 text-center">Loading data...</p>
+        ) : healthData.length > 0 ? (
           <>
             <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
               <p className="text-sm text-green-800 mb-2 font-medium">
                 ✅ {healthData.length} record{healthData.length !== 1 ? "s" : ""} loaded
+                {dataFileName && ` from ${dataFileName}`}
               </p>
               <p className="text-sm text-gray-600">
                 📊 Data is now available for charts, insights, and ML predictions.
@@ -64,9 +112,7 @@ export default function Home() {
             </div>
             <DataTable data={healthData} />
           </>
-        )}
-
-        {healthData.length === 0 && (
+        ) : (
           <p className="text-gray-600 mt-4 text-center">
             📊 Use <strong>Quick Entry</strong> to log daily data, or <strong>CSV Upload</strong> to import historical data.
           </p>
