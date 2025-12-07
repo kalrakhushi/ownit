@@ -3,6 +3,7 @@
 A modern, AI-powered health tracking application that combines real-time analytics, gamification, and personalized coaching to help users achieve their wellness goals.
 
 **Live Application**: [https://ownit-alpha.vercel.app/](https://ownit-alpha.vercel.app/)
+**Demo Video**:https://illinois.zoom.us/rec/share/8dMUqNF4chxdWpgYMy2e032Q6d-9F5q-nfShYefCyPf8SYgVjxr_YJuw4oLWMGGk.QEwhBw_o8SNYkq-L?startTime=1765144663000
 
 ---
 
