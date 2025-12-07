@@ -90,16 +90,16 @@ The application is currently deployed and accessible at [https://ownit-alpha.ver
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        CLIENT LAYER                          │
-│  Next.js 15 (React 19) + TypeScript + Tailwind CSS         │
+│                        CLIENT LAYER                         │
+│  Next.js 15 (React 19) + TypeScript + Tailwind CSS          │
 │  - 8 Pages  - 21 Components  - PostHog Analytics            │
 │  - Mobile-first responsive design                           │
 └─────────────────────────────────────────────────────────────┘
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                      API LAYER (Next.js)                     │
-│  - 12 RESTful Endpoints  - 4 Cron Jobs  - Middleware       │
-│  - Serverless functions (Vercel)                           │
+│                      API LAYER (Next.js)                    │
+│  - 12 RESTful Endpoints  - 4 Cron Jobs  - Middleware        │
+│  - Serverless functions (Vercel)                            │
 └─────────────────────────────────────────────────────────────┘
                             ▼
                     ┌───────┬───────┐
@@ -411,32 +411,32 @@ Letta:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    LETTA AGENT                           │
-│                                                          │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │  Memory Blocks                                   │   │
-│  │  ┌────────────┐ ┌────────────┐ ┌────────────┐  │   │
-│  │  │  Persona   │ │   Human    │ │  Custom    │  │   │
-│  │  │  (Coach)   │ │  (User)    │ │  (Context) │  │   │
-│  │  └────────────┘ └────────────┘ └────────────┘  │   │
-│  └─────────────────────────────────────────────────┘   │
-│                                                          │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │  Tools                                           │   │
-│  │  - send_message (core)                          │   │
-│  │  - archival_memory_search                       │   │
-│  │  - archival_memory_insert                       │   │
-│  │  - web_search (built-in)                        │   │
-│  │  - run_code (built-in)                          │   │
-│  └─────────────────────────────────────────────────┘   │
-│                                                          │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │  Message History (Server-Side)                   │   │
-│  │  - User messages                                 │   │
-│  │  - Assistant responses                           │   │
-│  │  - Tool calls                                    │   │
-│  │  - Tool returns                                  │   │
-│  └─────────────────────────────────────────────────┘   │
+│                    LETTA AGENT                          │
+│                                                         │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │  Memory Blocks                                  │    │
+│  │  ┌────────────┐ ┌────────────┐ ┌────────────┐   │    │
+│  │  │  Persona   │ │   Human    │ │  Custom    │   │    │
+│  │  │  (Coach)   │ │  (User)    │ │  (Context) │   │    │
+│  │  └────────────┘ └────────────┘ └────────────┘   │    │
+│  └─────────────────────────────────────────────────┘    │
+│                                                         │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │  Tools                                          │    │
+│  │  - send_message (core)                          │    │
+│  │  - archival_memory_search                       │    │
+│  │  - archival_memory_insert                       │    │
+│  │  - web_search (built-in)                        │    │
+│  │  - run_code (built-in)                          │    │
+│  └─────────────────────────────────────────────────┘    │
+│                                                         │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │  Message History (Server-Side)                  │    │
+│  │  - User messages                                │    │
+│  │  - Assistant responses                          │    │
+│  │  - Tool calls                                   │    │
+│  │  - Tool returns                                 │    │
+│  └─────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -915,7 +915,7 @@ Currently single-user mode. Future multi-user requires:
 
 ## Future Enhancements
 
-### Short-Term (3-6 months)
+### Short-Term 
 
 #### 1. Multi-User Support
 - **Impact**: High | **Effort**: Medium
@@ -969,7 +969,7 @@ Currently single-user mode. Future multi-user requires:
 - Social leaderboards
 - Activity feed
 
-### Medium-Term (6-12 months)
+### Medium-Term 
 
 #### 7. Mobile Native Apps
 - **Impact**: High | **Effort**: High
@@ -1006,7 +1006,7 @@ Currently single-user mode. Future multi-user requires:
 - Barcode scanning
 - Integration with MyFitnessPal
 
-### Long-Term (1-2 years)
+### Long-Term 
 
 #### 11. Healthcare Provider Integration
 - **Impact**: High | **Effort**: Very High
