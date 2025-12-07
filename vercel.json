@@ -1,20 +1,12 @@
 {
   "crons": [
     {
-      "path": "/api/cron/daily-summary",
-      "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/cron/weekly-report",
-      "schedule": "0 9 * * 1"
+      "path": "/api/cron/update-streaks",
+      "schedule": "0 0 * * *"
     },
     {
       "path": "/api/cron/process-analytics",
-      "schedule": "*/30 * * * *"
-    },
-    {
-      "path": "/api/cron/update-streaks",
-      "schedule": "0 0 * * *"
+      "schedule": "0 9 * * *"
     }
   ]
 }
