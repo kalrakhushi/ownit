@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Letta returns items in a paginated response
-    const items = response.items || response.messages || []
+    const items = response.items || []
     
     // Convert Letta messages to our format
     const messages = items
