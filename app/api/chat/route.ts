@@ -66,16 +66,16 @@ export async function GET(request: NextRequest) {
       return timeA - timeB  // Ascending order (oldest first)
     })
     
-    console.log('First 3 messages (should be oldest):', sortedMessages.slice(0, 3).map(m => ({
-      role: m.role,
-      preview: m.content.substring(0, 30),
-      timestamp: m.timestamp
+    console.log('First 3 messages (should be oldest):', sortedMessages.slice(0, 3).map((m: any) => ({
+      role: m?.role,
+      preview: m?.content?.substring(0, 30),
+      timestamp: m?.timestamp
     })))
     
-    console.log('Last 3 messages (should be newest):', sortedMessages.slice(-3).map(m => ({
-      role: m.role,
-      preview: m.content.substring(0, 30),
-      timestamp: m.timestamp
+    console.log('Last 3 messages (should be newest):', sortedMessages.slice(-3).map((m: any) => ({
+      role: m?.role,
+      preview: m?.content?.substring(0, 30),
+      timestamp: m?.timestamp
     })))
 
     return NextResponse.json({ messages: sortedMessages })
@@ -177,7 +177,9 @@ export async function POST(request: NextRequest) {
     let assistantMessage = ""
     for (const msg of response.messages) {
       if (msg.message_type === "assistant_message") {
-        assistantMessage = msg.content || ""
+        // Content can be string or array, handle both
+        const content = msg.content
+        assistantMessage = typeof content === 'string' ? content : (Array.isArray(content) ? JSON.stringify(content) : "")
         break
       }
     }
