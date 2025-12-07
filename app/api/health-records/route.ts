@@ -60,14 +60,36 @@ export async function POST(request: NextRequest) {
     }
     
     // Prepare data for insertion
-    const recordsToInsert = records.map((record: any) => ({
-      date: record.date, // Store as ISO string
-      weight: parseFloatSafe(record.weight),
-      steps: parseIntSafe(record.steps),
-      sleep: parseFloatSafe(record.sleep),
-      calories: parseIntSafe(record.calories),
-      protein: parseFloatSafe(record.protein),
-    }))
+    const recordsToInsert = records.map((record: any) => {
+      // Validate and format date
+      let dateValue = record.date
+      if (!dateValue) {
+        throw new Error('Date is required for all health records')
+      }
+      
+      // Ensure date is in YYYY-MM-DD format (ISO date string)
+      // If date comes in different format, try to parse it
+      if (typeof dateValue === 'string') {
+        // Check if it's already in ISO format
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+          // Try to parse other formats
+          const parsedDate = new Date(dateValue)
+          if (isNaN(parsedDate.getTime())) {
+            throw new Error(`Invalid date format: ${dateValue}. Expected YYYY-MM-DD format.`)
+          }
+          dateValue = parsedDate.toISOString().split('T')[0]
+        }
+      }
+      
+      return {
+        date: dateValue,
+        weight: parseFloatSafe(record.weight),
+        steps: parseIntSafe(record.steps),
+        sleep: parseFloatSafe(record.sleep),
+        calories: parseIntSafe(record.calories),
+        protein: parseFloatSafe(record.protein),
+      }
+    })
     
     // Insert records
     const createdRecords = await db.insert(healthRecords).values(recordsToInsert).returning()
@@ -113,10 +135,19 @@ export async function POST(request: NextRequest) {
       Array.isArray(body) ? formattedRecords : formattedRecords[0],
       { status: 201 }
     )
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating health records:', error)
+    console.error('Error details:', {
+      message: error?.message,
+      stack: error?.stack,
+      code: error?.code,
+      detail: error?.detail,
+    })
     return NextResponse.json(
-      { error: 'Failed to create health records' },
+      { 
+        error: 'Failed to create health records',
+        details: process.env.NODE_ENV === 'development' ? error?.message : undefined
+      },
       { status: 500 }
     )
   }

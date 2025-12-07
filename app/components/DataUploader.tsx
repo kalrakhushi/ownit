@@ -43,15 +43,19 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
             body: JSON.stringify(result.data),
           });
 
-          if (!response.ok) {
-            throw new Error('Failed to save data to database');
-          }
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData.details || errorData.error || 'Failed to save data to database'
+        console.error('API Error:', errorData)
+        throw new Error(errorMessage)
+      }
 
           const savedData = await response.json();
           onDataLoaded(Array.isArray(savedData) ? savedData : [savedData], file.name);
-        } catch (error) {
+        } catch (error: any) {
           console.error('Error saving CSV data:', error);
-          alert('Failed to save data to database. Please try again.');
+          const errorMessage = error?.message || 'Failed to save data to database. Please try again.'
+          alert(errorMessage);
         }
       },
     });
@@ -65,11 +69,36 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
       date: quickEntry.date,
     };
     
-    if (quickEntry.weight) entry.weight = parseFloat(quickEntry.weight);
-    if (quickEntry.steps) entry.steps = parseInt(quickEntry.steps);
-    if (quickEntry.sleep) entry.sleep = parseFloat(quickEntry.sleep);
-    if (quickEntry.calories) entry.calories = parseInt(quickEntry.calories);
-    if (quickEntry.protein) entry.protein = parseFloat(quickEntry.protein);
+    // Only add fields that have values (not empty strings)
+    if (quickEntry.weight && quickEntry.weight.trim() !== '') {
+      const weightVal = parseFloat(quickEntry.weight);
+      if (!isNaN(weightVal)) entry.weight = weightVal;
+    }
+    if (quickEntry.steps && quickEntry.steps.trim() !== '') {
+      const stepsVal = parseInt(quickEntry.steps);
+      if (!isNaN(stepsVal)) entry.steps = stepsVal;
+    }
+    if (quickEntry.sleep && quickEntry.sleep.trim() !== '') {
+      const sleepVal = parseFloat(quickEntry.sleep);
+      if (!isNaN(sleepVal)) entry.sleep = sleepVal;
+    }
+    if (quickEntry.calories && quickEntry.calories.trim() !== '') {
+      const caloriesVal = parseInt(quickEntry.calories);
+      if (!isNaN(caloriesVal)) entry.calories = caloriesVal;
+    }
+    if (quickEntry.protein && quickEntry.protein.trim() !== '') {
+      const proteinVal = parseFloat(quickEntry.protein);
+      if (!isNaN(proteinVal)) entry.protein = proteinVal;
+    }
+    
+    // Validate that we have at least one metric besides date
+    const hasMetrics = entry.weight !== undefined || entry.steps !== undefined || 
+                       entry.sleep !== undefined || entry.calories !== undefined || 
+                       entry.protein !== undefined;
+    if (!hasMetrics) {
+      alert('Please enter at least one health metric.');
+      return;
+    }
 
     try {
       // Save to database
@@ -82,7 +111,10 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save data to database');
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData.details || errorData.error || 'Failed to save data to database'
+        console.error('API Error:', errorData)
+        throw new Error(errorMessage)
       }
 
       const savedEntry = await response.json();
@@ -108,9 +140,10 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
       calories: "",
       protein: "",
     });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving quick entry:', error);
-      alert('Failed to save entry to database. Please try again.');
+      const errorMessage = error?.message || 'Failed to save entry to database. Please try again.'
+      alert(errorMessage);
     }
   };
 
