@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { Heart, Sparkles, ArrowUp } from "lucide-react";
+import { Heart, ArrowUp } from "lucide-react";
+import { analytics } from "@/lib/analytics";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -11,20 +12,62 @@ interface Message {
 }
 
 export default function ChatBot() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: "Hi! I'm your personal health coach. I can help you understand your health data, answer questions about your progress, and provide insights. What would you like to know?",
-      timestamp: new Date().toISOString(),
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Load message history from Letta on mount
+  useEffect(() => {
+    const loadHistory = async () => {
+      try {
+        const response = await fetch('/api/chat');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.messages && data.messages.length > 0) {
+            setMessages(data.messages);
+          } else {
+            // No history, show welcome message
+            setMessages([
+              {
+                role: 'assistant',
+                content: "Hi! I'm your personal health coach. I can help you understand your health data, answer questions about your progress, and provide insights. What would you like to know?",
+                timestamp: new Date().toISOString(),
+              }
+            ]);
+          }
+        } else {
+          // Error loading history, show welcome message
+          setMessages([
+            {
+              role: 'assistant',
+              content: "Hi! I'm your personal health coach. I can help you understand your health data, answer questions about your progress, and provide insights. What would you like to know?",
+              timestamp: new Date().toISOString(),
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error loading message history:', error);
+        // Show welcome message on error
+        setMessages([
+          {
+            role: 'assistant',
+            content: "Hi! I'm your personal health coach. I can help you understand your health data, answer questions about your progress, and provide insights. What would you like to know?",
+            timestamp: new Date().toISOString(),
+          }
+        ]);
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    };
+
+    loadHistory();
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -48,14 +91,16 @@ export default function ChatBot() {
     setMessages(prev => [...prev, newUserMessage]);
     setIsLoading(true);
 
-    try {
-      // Build conversation history for context
-      const conversationHistory = messages.map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'model' as 'user' | 'model',
-        parts: msg.content,
-      }));
+    // Track message sent
+    analytics.chatMessageSent({
+      messageLength: userMessage.length,
+      hasHealthContext: userMessage.toLowerCase().includes('health') || 
+                        userMessage.toLowerCase().includes('weight') || 
+                        userMessage.toLowerCase().includes('steps')
+    });
 
-      // Call chat API
+    try {
+      // Call chat API (non-streaming)
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -63,7 +108,6 @@ export default function ChatBot() {
         },
         body: JSON.stringify({
           message: userMessage,
-          conversationHistory,
         }),
       });
 
@@ -73,16 +117,17 @@ export default function ChatBot() {
 
       const data = await response.json();
       
-      // Add assistant response
+      // Add assistant's response
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.response,
+        content: data.message || "Sorry, I couldn't generate a response.",
         timestamp: data.timestamp || new Date().toISOString(),
       };
       
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
+      // Add error message
       const errorMessage: Message = {
         role: 'assistant',
         content: "Sorry, I'm having trouble responding right now. Please try again in a moment.",
@@ -115,7 +160,12 @@ export default function ChatBot() {
 
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-4 sm:py-5 space-y-3 sm:space-y-4">
-        {messages.map((message, index) => (
+        {isLoadingHistory && (
+          <div className="flex justify-center items-center h-full">
+            <div className="text-gray-500 text-sm">Loading conversation history...</div>
+          </div>
+        )}
+        {!isLoadingHistory && messages.map((message, index) => (
           <div
             key={index}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -180,10 +230,13 @@ export default function ChatBot() {
         
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-white text-gray-800 border border-gray-200 rounded-2xl px-4 py-2 shadow-sm">
+            <div className="bg-white text-gray-800 border border-gray-200 rounded-2xl px-4 py-3 shadow-sm">
               <div className="flex items-center gap-2 text-sm">
-                <Sparkles className="w-4 h-4 text-emerald-500" />
-                Thinking...
+                <div className="flex gap-1">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                </div>
               </div>
             </div>
           </div>
@@ -200,7 +253,7 @@ export default function ChatBot() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask anything about your health data..."
-            className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm text-sm sm:text-base"
+            className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm text-sm sm:text-base placeholder:text-gray-900"
             disabled={isLoading}
           />
           <button

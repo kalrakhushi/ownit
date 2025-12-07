@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { moodEntries } from '@/drizzle/schema';
+import { moodEntries } from '@/drizzle/schema.postgres';
 import { desc, eq } from 'drizzle-orm';
 
 // GET - Fetch all mood entries or entries for a specific date

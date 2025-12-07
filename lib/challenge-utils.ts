@@ -3,7 +3,7 @@
  */
 
 import { db } from '@/lib/db';
-import { challenges, challengeProgress, rewards } from '@/drizzle/schema';
+import { challenges, challengeProgress, rewards } from '@/drizzle/schema.postgres';
 import { eq, and, desc } from 'drizzle-orm';
 
 export interface ChallengeWithProgress {

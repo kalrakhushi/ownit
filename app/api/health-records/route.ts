@@ -1,24 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { healthRecords } from '@/drizzle/schema'
+import { healthRecords } from '@/drizzle/schema.postgres'
 import { desc } from 'drizzle-orm'
 import { updateStreaks } from '@/lib/streak-utils'
+import { getCachedOrCompute, cacheKeys, CACHE_TTL, invalidateCache } from '@/lib/redis'
 
 // GET - Fetch all health records
 export async function GET() {
   try {
-    const records = await db.select().from(healthRecords).orderBy(desc(healthRecords.date))
-    
-    // Convert to format expected by frontend
-    const formattedRecords = records.map(record => ({
-      id: record.id,
-      date: record.date, // Already stored as ISO string
-      weight: record.weight,
-      steps: record.steps,
-      sleep: record.sleep,
-      calories: record.calories,
-      protein: record.protein,
-    }))
+    // Cache health records for 30 seconds
+    const formattedRecords = await getCachedOrCompute(
+      cacheKeys.healthRecords(),
+      CACHE_TTL.HEALTH_RECORDS,
+      async () => {
+        const records = await db.select().from(healthRecords).orderBy(desc(healthRecords.date))
+        
+        // Convert to format expected by frontend
+        return records.map(record => ({
+          id: record.id,
+          date: record.date, // Already stored as ISO string
+          weight: record.weight,
+          steps: record.steps,
+          sleep: record.sleep,
+          calories: record.calories,
+          protein: record.protein,
+        }))
+      }
+    )
     
     return NextResponse.json(formattedRecords)
   } catch (error) {
@@ -66,6 +74,29 @@ export async function POST(request: NextRequest) {
     
     // Update streaks after adding new records
     await updateStreaks()
+    
+    // Invalidate relevant caches when new data is added
+    await Promise.all([
+      invalidateCache(cacheKeys.healthRecords()),
+      invalidateCache('analytics:patterns'),
+      invalidateCache(cacheKeys.streaks()),
+      // Invalidate all prediction caches (they have dynamic keys)
+      invalidateCache('analytics:predictions:all:14'),
+      invalidateCache('analytics:predictions:steps:14'),
+      invalidateCache('analytics:predictions:sleep:14'),
+      invalidateCache('analytics:predictions:calories:14'),
+      invalidateCache('analytics:predictions:weight:14'),
+    ])
+    
+    // Track analytics event (on server, we'll use a marker in response)
+    // Client will track the actual event
+    console.log('[Analytics] Health records added:', {
+      count: createdRecords.length,
+      hasWeight: recordsToInsert.some(r => r.weight !== null),
+      hasSteps: recordsToInsert.some(r => r.steps !== null),
+      hasSleep: recordsToInsert.some(r => r.sleep !== null),
+      hasCalories: recordsToInsert.some(r => r.calories !== null),
+    })
     
     // Format response
     const formattedRecords = createdRecords.map((record) => ({

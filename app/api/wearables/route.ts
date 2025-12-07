@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { and, desc, eq } from 'drizzle-orm'
 import { db } from '@/lib/db'
-import { wearableSamples } from '@/drizzle/schema'
+import { wearableSamples } from '@/drizzle/schema.postgres'
 
 const allowedSources = new Set(['apple_health', 'fitbit', 'google_fit', 'myfitnesspal'])
 const allowedTypes = new Set([

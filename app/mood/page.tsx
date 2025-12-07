@@ -5,7 +5,7 @@ import { Smile, RefreshCw } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import MoodLogger from "../components/MoodLogger";
 import MoodHistory from "../components/MoodHistory";
-import { MoodEntry } from "@/drizzle/schema";
+import { MoodEntry } from "@/drizzle/schema.postgres";
 
 export default function MoodPage() {
   const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([]);

@@ -1,7 +1,7 @@
 "use client";
 
 import { Smile, Frown, Meh, Calendar } from "lucide-react";
-import { MoodEntry } from "@/drizzle/schema";
+import { MoodEntry } from "@/drizzle/schema.postgres";
 
 interface MoodHistoryProps {
   entries: MoodEntry[];

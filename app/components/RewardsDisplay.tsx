@@ -1,7 +1,7 @@
 "use client";
 
 import { Trophy, Award, Star } from "lucide-react";
-import { Reward } from "@/drizzle/schema";
+import { Reward } from "@/drizzle/schema.postgres";
 
 interface RewardsDisplayProps {
   rewards: Reward[];

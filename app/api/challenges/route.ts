@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { challenges, challengeProgress, rewards, healthRecords } from '@/drizzle/schema';
+import { challenges, challengeProgress, rewards, healthRecords } from '@/drizzle/schema.postgres';
 import { eq, and, desc } from 'drizzle-orm';
 import {
   calculateChallengeProgress,

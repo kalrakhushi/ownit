@@ -12,7 +12,7 @@ import BottomNav from "../components/BottomNav";
 import { RiskAlert } from "@/lib/risk-detection";
 import { ComparisonResult } from "@/lib/comparison-utils";
 import WearableIntegrationCard from "../components/WearableIntegrationCard";
-import InfluencerSubmissionCard from "../components/InfluencerSubmissionCard";
+import LeaderboardCard from "../components/LeaderboardCard";
 
 export default function DashboardPage() {
   const [healthData, setHealthData] = useState<any[]>([]);
@@ -105,6 +105,11 @@ export default function DashboardPage() {
             <WearableIntegrationCard />
           </div>
 
+          {/* Leaderboard */}
+          <div className="mb-6">
+            <LeaderboardCard limit={5} />
+          </div>
+
           <DataUploader onDataLoaded={handleDataLoaded} />
 
           {isLoading ? (
@@ -142,10 +147,6 @@ export default function DashboardPage() {
               <DashboardOverview data={healthData} />
               <HealthCharts data={healthData} />
               <DataTable data={healthData} />
-
-              <div className="mt-8">
-                <InfluencerSubmissionCard />
-              </div>
             </>
           ) : (
             <p className="text-gray-600 mt-4 text-center flex items-center justify-center gap-2">

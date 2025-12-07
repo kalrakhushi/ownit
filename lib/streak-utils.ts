@@ -1,5 +1,5 @@
-import { db } from './db'
-import { healthRecords, streaks } from '@/drizzle/schema'
+import { db } from '@/lib/db'
+import { healthRecords, streaks } from '@/drizzle/schema.postgres'
 import { eq } from 'drizzle-orm'
 
 /**

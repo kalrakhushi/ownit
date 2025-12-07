@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Flame, Lightbulb, MessageCircle, Target, Smile, Brain } from "lucide-react";
+import { LayoutDashboard, Flame, Lightbulb, MessageCircle, Target, Video } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface NavItem {
@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
   { href: "/insights", icon: Lightbulb, label: "Insights" },
   { href: "/coach", icon: MessageCircle, label: "Coach" },
   { href: "/goals", icon: Target, label: "Goals" },
+  { href: "/influencers", icon: Video, label: "Videos" },
 ];
 
 export default function BottomNav() {

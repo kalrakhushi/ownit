@@ -1,11 +1,24 @@
-import { drizzle } from 'drizzle-orm/better-sqlite3'
-import Database from 'better-sqlite3'
-import * as schema from '../drizzle/schema'
+import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+import * as schema from '../drizzle/schema.postgres'
 
-const databaseUrl = process.env.DATABASE_URL?.replace('file:', '') || './dev.db'
-const sqlite = new Database(databaseUrl)
+// Use connection pooling for better performance
+const connectionString = process.env.DATABASE_URL!
 
-// Enable WAL mode for better concurrency
-sqlite.pragma('journal_mode = WAL')
+if (!connectionString) {
+  throw new Error('DATABASE_URL environment variable is not set')
+}
 
-export const db = drizzle(sqlite, { schema })
+// Create postgres client with connection pooling
+// For Supabase connection pooling, SSL is handled automatically
+const client = postgres(connectionString, {
+  max: 10, // Max connections in pool
+  idle_timeout: 20,
+  connect_timeout: 10,
+  // SSL is automatically enabled for Supabase connections
+})
+
+export const db = drizzle(client, { schema })
+
+// Export client for raw queries if needed
+export { client as postgresClient }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { healthRecords } from '@/drizzle/schema';
+import { healthRecords } from '@/drizzle/schema.postgres';
 import { desc } from 'drizzle-orm';
 import { compareAllMetrics } from '@/lib/comparison-utils';
 

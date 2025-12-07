@@ -161,7 +161,7 @@ export default function MoodLogger({ onSave }: MoodLoggerProps) {
             onChange={(e) => setReflection(e.target.value)}
             placeholder="How did today go? What made you feel this way?"
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none placeholder:text-gray-900"
           />
         </div>
 
@@ -175,7 +175,7 @@ export default function MoodLogger({ onSave }: MoodLoggerProps) {
             value={tags}
             onChange={(e) => setTags(e.target.value)}
             placeholder="e.g., happy, productive, exercise, tired"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder:text-gray-900"
           />
         </div>
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Papa from "papaparse";
 import { CheckCircle2 } from "lucide-react";
+import { analytics } from "@/lib/analytics";
 
 interface DataUploaderProps {
   onDataLoaded: (data: any[], fileName: string) => void;
@@ -85,6 +86,17 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
       }
 
       const savedEntry = await response.json();
+      
+      // Track quick entry
+      analytics.healthRecordAdded({
+        method: 'quick-entry',
+        recordCount: 1,
+        hasWeight: !!savedEntry.weight,
+        hasSteps: !!savedEntry.steps,
+        hasSleep: !!savedEntry.sleep,
+        hasCalories: !!savedEntry.calories,
+      });
+      
       onDataLoaded([savedEntry], "quick-entry");
     
     // Reset form (keep date)
@@ -157,7 +169,7 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
                 value={quickEntry.weight}
                 onChange={(e) => setQuickEntry({ ...quickEntry, weight: e.target.value })}
                 placeholder="e.g., 70.5"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-gray-900"
               />
             </div>
 
@@ -184,7 +196,7 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
                 value={quickEntry.sleep}
                 onChange={(e) => setQuickEntry({ ...quickEntry, sleep: e.target.value })}
                 placeholder="e.g., 7.5"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-gray-900"
               />
             </div>
 
@@ -197,7 +209,7 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
                 value={quickEntry.calories}
                 onChange={(e) => setQuickEntry({ ...quickEntry, calories: e.target.value })}
                 placeholder="e.g., 2000"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-gray-900"
               />
             </div>
 
@@ -211,7 +223,7 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
                 value={quickEntry.protein}
                 onChange={(e) => setQuickEntry({ ...quickEntry, protein: e.target.value })}
                 placeholder="e.g., 150"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-gray-900"
               />
             </div>
           </div>
