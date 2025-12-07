@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { Heart } from "lucide-react";
+import { Heart, Sparkles, ArrowUp } from "lucide-react";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -95,32 +95,36 @@ export default function ChatBot() {
   };
 
   return (
-    <div className="flex flex-col h-[600px] bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-140px)] sm:h-[680px] bg-gradient-to-b from-gray-50 via-white to-gray-50 rounded-2xl shadow-md border border-gray-200 overflow-hidden">
       {/* Chat Header */}
-      <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-            <Heart className="w-5 h-5 fill-white text-white" />
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 px-4 sm:px-5 py-3 sm:py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-sm">
+            <Heart className="w-6 h-6 fill-white text-white" />
           </div>
           <div>
-            <h3 className="font-semibold">OwnIt Coach</h3>
-            <p className="text-xs text-green-100">Your personal health assistant</p>
+            <h3 className="font-semibold text-gray-900">OwnIt Coach</h3>
+            <p className="text-xs text-gray-600">Smart health guidance, tailored to you</p>
           </div>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-gray-600">
+          <span className="w-2 h-2 bg-emerald-500 rounded-full shadow-sm" />
+          Available
         </div>
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-4 sm:py-5 space-y-3 sm:space-y-4">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[80%] rounded-lg px-4 py-2 ${
+            className={`max-w-[88%] sm:max-w-[80%] rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-sm ${
                 message.role === 'user'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-white text-gray-800 border border-gray-200'
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-white text-gray-800 border border-gray-100'
               }`}
             >
               {message.role === 'assistant' ? (
@@ -162,7 +166,7 @@ export default function ChatBot() {
               )}
               <p
                 className={`text-xs mt-1 ${
-                  message.role === 'user' ? 'text-green-100' : 'text-gray-400'
+                  message.role === 'user' ? 'text-emerald-50' : 'text-gray-400'
                 }`}
               >
                 {new Date(message.timestamp).toLocaleTimeString([], {
@@ -176,11 +180,10 @@ export default function ChatBot() {
         
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-white text-gray-800 border border-gray-200 rounded-lg px-4 py-2">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <div className="bg-white text-gray-800 border border-gray-200 rounded-2xl px-4 py-2 shadow-sm">
+              <div className="flex items-center gap-2 text-sm">
+                <Sparkles className="w-4 h-4 text-emerald-500" />
+                Thinking...
               </div>
             </div>
           </div>
@@ -190,26 +193,27 @@ export default function ChatBot() {
       </div>
 
       {/* Input Area */}
-      <form onSubmit={handleSend} className="border-t border-gray-200 p-4 bg-white">
-        <div className="flex gap-2">
+      <form onSubmit={handleSend} className="border-t border-gray-200 p-3 sm:p-4 bg-white sticky bottom-0 left-0 right-0">
+        <div className="flex gap-2 items-center">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask me about your health data..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            placeholder="Ask anything about your health data..."
+            className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm text-sm sm:text-base"
             disabled={isLoading}
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium"
+            className="px-3 sm:px-4 py-2 sm:py-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium shadow-sm flex items-center gap-2 text-sm sm:text-base"
           >
-            Send
+            <span>Send</span>
+            <ArrowUp className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-xs text-gray-500 mt-2 text-center">
-          Ask questions about your health data, trends, or get personalized advice
+        <p className="text-[11px] sm:text-xs text-gray-500 mt-2 text-center">
+          Try: “Summarize my week”, “Explain my sleep trend”, or “Give me one action for today”
         </p>
       </form>
     </div>

@@ -202,25 +202,25 @@ export default function DashboardOverview({ data }: DashboardOverviewProps) {
 
   const getColorClasses = (color: string) => {
     const colors = {
-      blue: "bg-blue-50 border-blue-200 text-blue-700",
-      green: "bg-green-50 border-green-200 text-green-700",
-      orange: "bg-orange-50 border-orange-200 text-orange-700",
-      purple: "bg-purple-50 border-purple-200 text-purple-700",
+      blue: "bg-blue-50 border-blue-100 text-gray-900",
+      green: "bg-emerald-50 border-emerald-100 text-gray-900",
+      orange: "bg-amber-50 border-amber-100 text-gray-900",
+      purple: "bg-purple-50 border-purple-100 text-gray-900",
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };
 
   const getTrendIcon = (trend: number | null) => {
     if (trend === null) return <Minus className="w-4 h-4 text-gray-400" />;
-    if (trend > 0) return <TrendingUp className="w-4 h-4 text-green-600" />;
-    if (trend < 0) return <TrendingDown className="w-4 h-4 text-red-600" />;
+    if (trend > 0) return <TrendingUp className="w-4 h-4 text-emerald-600" />;
+    if (trend < 0) return <TrendingDown className="w-4 h-4 text-rose-600" />;
     return <Minus className="w-4 h-4 text-gray-400" />;
   };
 
   const getTrendColor = (trend: number | null) => {
     if (trend === null) return "text-gray-500";
-    if (trend > 0) return "text-green-600";
-    if (trend < 0) return "text-red-600";
+    if (trend > 0) return "text-emerald-700";
+    if (trend < 0) return "text-rose-700";
     return "text-gray-500";
   };
 
@@ -233,7 +233,7 @@ export default function DashboardOverview({ data }: DashboardOverviewProps) {
           {cards.map((card) => (
             <div
               key={card.label}
-              className={`p-4 rounded-lg border ${getColorClasses(card.color)}`}
+              className={`p-4 rounded-lg border shadow-sm transition-shadow hover:shadow-md ${getColorClasses(card.color)}`}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">

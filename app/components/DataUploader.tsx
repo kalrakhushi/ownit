@@ -86,16 +86,16 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
 
       const savedEntry = await response.json();
       onDataLoaded([savedEntry], "quick-entry");
-      
-      // Reset form (keep date)
-      setQuickEntry({
-        date: new Date().toISOString().split("T")[0],
-        weight: "",
-        steps: "",
-        sleep: "",
-        calories: "",
-        protein: "",
-      });
+    
+    // Reset form (keep date)
+    setQuickEntry({
+      date: new Date().toISOString().split("T")[0],
+      weight: "",
+      steps: "",
+      sleep: "",
+      calories: "",
+      protein: "",
+    });
     } catch (error) {
       console.error('Error saving quick entry:', error);
       alert('Failed to save entry to database. Please try again.');
