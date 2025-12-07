@@ -102,19 +102,19 @@ The application is currently deployed and accessible at [https://ownit-alpha.ver
 │  - Serverless functions (Vercel)                           │
 └─────────────────────────────────────────────────────────────┘
                             ▼
-        ┌───────────────────┬───────────────────┐
-        ▼                   ▼                   ▼
-┌──────────────┐   ┌──────────────┐   ┌──────────────┐
-│   REDIS      │   │  POSTGRESQL  │   │   LETTA AI   │
-│   (Upstash)  │   │  (Supabase)  │   │   (Cloud)    │
-│              │   │              │   │              │
-│ - Caching    │   │ - Health     │   │ - Stateful   │
-│ - Leaderboard│   │   Records    │   │   Agent      │
-│ - TTL Mgmt   │   │ - Streaks    │   │ - Memory     │
-│ - Sorted Sets│   │ - Mood Data  │   │ - Tools      │
-│              │   │ - Challenges │   │ - Persistence│
-│              │   │ - Rewards    │   │              │
-└──────────────┘   └──────────────┘   └──────────────┘
+                    ┌───────┬───────┐
+                    ▼       ▼       ▼
+        ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+        │   REDIS      │ │  POSTGRESQL  │ │   LETTA AI   │
+        │   (Upstash)  │ │  (Supabase)  │ │   (Cloud)    │
+        │              │ │              │ │              │
+        │ - Caching    │ │ - Health     │ │ - Stateful   │
+        │ - Leaderboard│ │   Records    │ │   Agent      │
+        │ - TTL Mgmt   │ │ - Streaks    │ │ - Memory     │
+        │ - Sorted Sets│ │ - Mood Data  │ │ - Tools      │
+        │              │ │ - Challenges │ │ - Persistence│
+        │              │ │ - Rewards    │ │              │
+        └──────────────┘ └──────────────┘ └──────────────┘
 ```
 
 ### Data Flow Architecture
