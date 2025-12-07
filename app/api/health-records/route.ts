@@ -153,9 +153,25 @@ export async function POST(request: NextRequest) {
       code: error?.code,
       detail: error?.detail,
     })
+    
+    // Provide helpful error message without exposing sensitive details
+    let errorMessage = 'Failed to create health records'
+    if (error?.message) {
+      // Show user-friendly error messages
+      if (error.message.includes('Date is required')) {
+        errorMessage = 'Date is required for all health records'
+      } else if (error.message.includes('Invalid date format')) {
+        errorMessage = error.message
+      } else if (error.message.includes('DATABASE_URL')) {
+        errorMessage = 'Database connection error. Please check configuration.'
+      } else if (process.env.NODE_ENV === 'development') {
+        errorMessage = error.message
+      }
+    }
+    
     return NextResponse.json(
       { 
-        error: 'Failed to create health records',
+        error: errorMessage,
         details: process.env.NODE_ENV === 'development' ? error?.message : undefined
       },
       { status: 500 }

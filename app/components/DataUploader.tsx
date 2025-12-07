@@ -119,6 +119,11 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
 
       const savedEntry = await response.json();
       
+      // Verify we got a valid response
+      if (!savedEntry || !savedEntry.id) {
+        throw new Error('Invalid response from server. Please try again.')
+      }
+      
       // Track quick entry
       analytics.healthRecordAdded({
         method: 'quick-entry',
@@ -131,18 +136,19 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
       
       onDataLoaded([savedEntry], "quick-entry");
     
-    // Reset form (keep date)
-    setQuickEntry({
-      date: new Date().toISOString().split("T")[0],
-      weight: "",
-      steps: "",
-      sleep: "",
-      calories: "",
-      protein: "",
-    });
+      // Reset form (keep date)
+      setQuickEntry({
+        date: new Date().toISOString().split("T")[0],
+        weight: "",
+        steps: "",
+        sleep: "",
+        calories: "",
+        protein: "",
+      });
     } catch (error: any) {
       console.error('Error saving quick entry:', error);
       const errorMessage = error?.message || 'Failed to save entry to database. Please try again.'
+      console.error('Full error details:', error);
       alert(errorMessage);
     }
   };
