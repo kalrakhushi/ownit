@@ -26,6 +26,10 @@
 
 OwnIt is a modern, AI-powered health coaching application that combines real-time analytics, gamification, and personalized coaching to help users achieve their wellness goals. The application leverages cutting-edge technologies including stateful AI agents, Redis caching, and machine learning to deliver a responsive, intelligent user experience.
 
+**Production Deployment**: [https://ownit-alpha.vercel.app/](https://ownit-alpha.vercel.app/)
+
+The application is currently deployed and accessible at the production URL above, running on Vercel's serverless infrastructure.
+
 **Key Metrics:**
 - 80-96% faster API responses through Redis caching
 - 21 reusable React components
@@ -961,14 +965,17 @@ OwnIt represents a modern approach to health coaching, combining:
 - **Clean architecture** (TypeScript, Drizzle ORM)
 - **User engagement** (TikTok-style videos, visualizations)
 
-The technical stack is production-ready, scalable, and built with modern best practices. Future enhancements focus on mobile apps, wearable integration, and advanced AI features to provide even more personalized health coaching.
+The technical stack is production-ready, scalable, and built with modern best practices. The application is currently deployed and accessible at [https://ownit-alpha.vercel.app/](https://ownit-alpha.vercel.app/), running on Vercel's serverless infrastructure with automatic scaling and global CDN distribution.
+
+Future enhancements focus on mobile apps, wearable integration, and advanced AI features to provide even more personalized health coaching.
 
 **Total Development Time**: ~4 weeks  
 **Lines of Code**: ~10,000+  
 **Components**: 21  
 **API Endpoints**: 12  
 **Performance Improvement**: 80-96%  
-**Status**: Production Ready
+**Status**: Production Ready and Deployed  
+**Production URL**: [https://ownit-alpha.vercel.app/](https://ownit-alpha.vercel.app/)
 
 ---
 

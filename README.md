@@ -2,7 +2,14 @@
 
 AI-powered health tracking with real-time analytics, gamification, and personalized coaching.
 
+**Live Application**: [https://ownit-alpha.vercel.app/](https://ownit-alpha.vercel.app/)
+
 ## Quick Start
+
+### Production (Deployed)
+Visit the live application: [https://ownit-alpha.vercel.app/](https://ownit-alpha.vercel.app/)
+
+### Local Development
 
 ```bash
 npm install
@@ -99,13 +106,19 @@ npm run drizzle:studio   # Database GUI
 - Predictions: 1034ms → 71ms (93% faster)
 - Streaks: 234ms → 77ms (67% faster)
 
-## Deploy
+## Deployment
 
-Deploy to Vercel:
-1. Push to GitHub
-2. Import to Vercel
-3. Add environment variables
-4. Deploy
+**Production URL**: [https://ownit-alpha.vercel.app/](https://ownit-alpha.vercel.app/)
+
+The application is currently deployed on Vercel and accessible at the URL above.
+
+### Deployment Process
+
+To deploy updates:
+1. Push changes to GitHub
+2. Vercel automatically deploys from the main branch
+3. Environment variables are configured in Vercel dashboard
+4. Deployment completes in ~2-3 minutes
 
 ## Security & Authentication (Roadmap)
 
