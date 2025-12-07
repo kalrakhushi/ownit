@@ -1,9 +1,7 @@
 # OwnIt - Technical Design Document
 
 **Project**: Personal Health Coaching Application  
-**Version**: 2.0  
 **Author**: Khushi Kalra  
-**Date**: December 2024  
 **Status**: Production Ready and Deployed  
 **Production URL**: [https://ownit-alpha.vercel.app/](https://ownit-alpha.vercel.app/)
 
@@ -1317,7 +1315,6 @@ Leaderboard Query:
 
 ### E. Project Statistics
 
-- **Total Development Time**: ~4 weeks
 - **Lines of Code**: ~10,000+
 - **Components**: 21
 - **API Endpoints**: 12 (plus 4 cron jobs)
@@ -1329,7 +1326,5 @@ Leaderboard Query:
 
 ---
 
-**Document Version**: 2.0  
-**Last Updated**: December 2024  
 **Author**: Khushi Kalra  
 **Project**: OwnIt - Personal Health Coach
