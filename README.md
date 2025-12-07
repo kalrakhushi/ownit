@@ -1,8 +1,8 @@
-# 🏋️ OwnIt - Personal Health Coach
+# OwnIt - Personal Health Coach
 
 AI-powered health tracking with real-time analytics, gamification, and personalized coaching.
 
-## ⚡ Quick Start
+## Quick Start
 
 ```bash
 npm install
@@ -13,7 +13,7 @@ npm run dev
 
 Visit `http://localhost:3000`
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js 15, TypeScript, Tailwind CSS
 - **Database**: PostgreSQL (Supabase)
@@ -21,17 +21,17 @@ Visit `http://localhost:3000`
 - **AI**: Letta (stateful agent)
 - **Analytics**: PostHog
 
-## ✨ Features
+## Features
 
-- 🤖 AI Health Coach with memory
-- 📊 Health data tracking (6 metrics)
-- 🔥 Streak tracking (90-day calendar)
-- 🏆 Real-time leaderboards (4 types)
-- 🧠 ML predictions & pattern detection
-- 📱 TikTok-style video feed
-- 📈 Redis-cached analytics (80-96% faster)
+- AI Health Coach with memory
+- Health data tracking (6 metrics)
+- Streak tracking (90-day calendar)
+- Real-time leaderboards (4 types)
+- ML predictions & pattern detection
+- TikTok-style video feed
+- Redis-cached analytics (80-96% faster)
 
-## 🔑 Environment Setup
+## Environment Setup
 
 Create `.env.local`:
 
@@ -52,7 +52,7 @@ NEXT_PUBLIC_POSTHOG_KEY=phc_...
 NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
 ```
 
-## 📁 Structure
+## Structure
 
 ```
 ownit/
@@ -65,7 +65,7 @@ ownit/
 └── scripts/          # Setup scripts
 ```
 
-## 🎯 Pages
+## Pages
 
 - `/dashboard` - Overview, data entry, charts
 - `/coach` - AI chat
@@ -75,7 +75,7 @@ ownit/
 - `/influencers` - Video feed
 - `/mood` - Mood logging
 
-## 🔌 Key APIs
+## Key APIs
 
 - `/api/health-records` - Health data CRUD
 - `/api/streaks` - Streak calculations
@@ -84,7 +84,7 @@ ownit/
 - `/api/leaderboard` - Real-time rankings
 - `/api/chat` - AI coach
 
-## 📦 Scripts
+## Scripts
 
 ```bash
 npm run dev              # Start dev server
@@ -93,13 +93,13 @@ npm run drizzle:push     # Update database
 npm run drizzle:studio   # Database GUI
 ```
 
-## ⚡ Performance
+## Performance
 
 - Patterns: 1942ms → 73ms (96% faster)
 - Predictions: 1034ms → 71ms (93% faster)
 - Streaks: 234ms → 77ms (67% faster)
 
-## 🚀 Deploy
+## Deploy
 
 Deploy to Vercel:
 1. Push to GitHub
@@ -107,7 +107,7 @@ Deploy to Vercel:
 3. Add environment variables
 4. Deploy
 
-## 🔐 Security & Authentication (Roadmap)
+## Security & Authentication (Roadmap)
 
 Currently single-user mode. Future multi-user implementation planned:
 
@@ -138,4 +138,4 @@ Currently single-user mode. Future multi-user implementation planned:
 
 ---
 
-**Built with ❤️ for health-conscious users**
+**Built for health-conscious users**
