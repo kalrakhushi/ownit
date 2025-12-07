@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       limit: 100, // Get last 100 messages
     })
 
-    // Letta returns items in a paginated response (newest first)
+    // Letta returns items in a paginated response
     const items = response.items || response.messages || []
     
     // Convert Letta messages to our format
@@ -58,17 +58,27 @@ export async function GET(request: NextRequest) {
         return null
       })
       .filter((msg: any) => msg !== null)
-      
-    // Letta returns newest first (index 0 = newest message)
-    // Reverse to get chronological order (oldest first) for chat UI
-    const reversedMessages = messages.reverse()
     
-    console.log('Message order check:', reversedMessages.slice(0, 3).map(m => ({
+    // Sort by timestamp to ensure chronological order (oldest first)
+    const sortedMessages = messages.sort((a: any, b: any) => {
+      const timeA = new Date(a.timestamp).getTime()
+      const timeB = new Date(b.timestamp).getTime()
+      return timeA - timeB  // Ascending order (oldest first)
+    })
+    
+    console.log('First 3 messages (should be oldest):', sortedMessages.slice(0, 3).map(m => ({
       role: m.role,
-      preview: m.content.substring(0, 30)
+      preview: m.content.substring(0, 30),
+      timestamp: m.timestamp
+    })))
+    
+    console.log('Last 3 messages (should be newest):', sortedMessages.slice(-3).map(m => ({
+      role: m.role,
+      preview: m.content.substring(0, 30),
+      timestamp: m.timestamp
     })))
 
-    return NextResponse.json({ messages: reversedMessages })
+    return NextResponse.json({ messages: sortedMessages })
   } catch (error: any) {
     console.error('Error fetching message history:', error)
     return NextResponse.json(

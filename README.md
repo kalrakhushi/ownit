@@ -107,6 +107,89 @@ Deploy to Vercel:
 3. Add environment variables
 4. Deploy
 
+## 🔐 Security & Authentication (Roadmap)
+
+Currently single-user mode. Future multi-user implementation planned:
+
+### **Authentication Strategy**
+- **NextAuth.js v5** - Industry-standard auth for Next.js
+- **OAuth Providers**: Google, Apple, GitHub
+- **Email/Password**: With email verification
+- **2FA**: Time-based one-time passwords (TOTP)
+- **Session Management**: Secure JWT tokens
+
+### **Database Security**
+- **Row-Level Security (RLS)** - Supabase policies per user
+- **Encrypted Fields** - Sensitive health data encryption
+- **Audit Logs** - Track data access and changes
+- **Backup & Recovery** - Automated daily backups
+
+### **API Security**
+- **Rate Limiting** - Prevent abuse (Upstash Rate Limit)
+- **CORS Configuration** - Restrict API access
+- **API Key Rotation** - Automated secret rotation
+- **Input Validation** - Zod schemas for all endpoints
+
+### **Data Privacy**
+- **GDPR Compliance** - Data export, deletion rights
+- **HIPAA Readiness** - Healthcare data standards
+- **End-to-End Encryption** - For sensitive data
+- **Anonymous Analytics** - No PII in PostHog
+
+### **Implementation Plan**
+```typescript
+// 1. NextAuth Configuration
+import NextAuth from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import { SupabaseAdapter } from "@auth/supabase-adapter"
+
+export const { handlers, auth } = NextAuth({
+  adapter: SupabaseAdapter({
+    url: process.env.DATABASE_URL,
+    secret: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  }),
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+  ],
+  callbacks: {
+    session: async ({ session, user }) => {
+      session.user.id = user.id
+      return session
+    },
+  },
+})
+
+// 2. Middleware Protection
+export function middleware(request: NextRequest) {
+  const session = await auth()
+  if (!session) {
+    return NextResponse.redirect('/login')
+  }
+  return NextResponse.next()
+}
+
+// 3. Row-Level Security (Supabase)
+CREATE POLICY "Users can only access their own data"
+ON health_records
+FOR ALL
+USING (auth.uid() = user_id);
+```
+
+### **Security Checklist**
+- [ ] Implement NextAuth.js with OAuth
+- [ ] Add Row-Level Security to all tables
+- [ ] Encrypt sensitive health data at rest
+- [ ] Set up rate limiting (Upstash)
+- [ ] Add audit logging
+- [ ] Implement 2FA
+- [ ] GDPR compliance features
+- [ ] Penetration testing
+- [ ] Security headers (helmet.js)
+- [ ] CSP (Content Security Policy)
+
 ---
 
 **Built with ❤️ for health-conscious users**
