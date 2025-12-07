@@ -3,10 +3,6 @@
     {
       "path": "/api/cron/update-streaks",
       "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/cron/process-analytics",
-      "schedule": "0 9 * * *"
     }
   ]
 }
