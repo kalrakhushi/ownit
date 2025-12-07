@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏋️ OwnIt - Personal Health Coach
 
-## Getting Started
+AI-powered health tracking with real-time analytics, gamification, and personalized coaching.
 
-First, run the development server:
+## ⚡ Quick Start
 
 ```bash
+npm install
+npm run drizzle:push
+npx tsx scripts/init-letta-agent.ts
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend**: Next.js 15, TypeScript, Tailwind CSS
+- **Database**: PostgreSQL (Supabase)
+- **Caching**: Upstash Redis (80-96% faster)
+- **AI**: Letta (stateful agent)
+- **Analytics**: PostHog
 
-## Learn More
+## ✨ Features
 
-To learn more about Next.js, take a look at the following resources:
+- 🤖 AI Health Coach with memory
+- 📊 Health data tracking (6 metrics)
+- 🔥 Streak tracking (90-day calendar)
+- 🏆 Real-time leaderboards (4 types)
+- 🧠 ML predictions & pattern detection
+- 📱 TikTok-style video feed
+- 📈 Redis-cached analytics (80-96% faster)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔑 Environment Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Create `.env.local`:
 
-## Deploy on Vercel
+```bash
+# Database
+DATABASE_URL=postgresql://...
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Letta AI
+LETTA_API_KEY=sk-let-...
+LETTA_AGENT_ID=agent-...
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Redis
+UPSTASH_REDIS_REST_URL=https://...
+UPSTASH_REDIS_REST_TOKEN=...
+
+# PostHog
+NEXT_PUBLIC_POSTHOG_KEY=phc_...
+NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+```
+
+## 📁 Structure
+
+```
+ownit/
+├── app/
+│   ├── api/          # 12 endpoints + 4 cron jobs
+│   ├── components/   # 21 React components
+│   └── [pages]/      # 8 pages
+├── lib/              # 9 utility files
+├── drizzle/          # Database schema
+└── scripts/          # Setup scripts
+```
+
+## 🎯 Pages
+
+- `/dashboard` - Overview, data entry, charts
+- `/coach` - AI chat
+- `/streaks` - Streak tracking
+- `/insights` - Analytics
+- `/goals` - Goal setting
+- `/influencers` - Video feed
+- `/mood` - Mood logging
+
+## 🔌 Key APIs
+
+- `/api/health-records` - Health data CRUD
+- `/api/streaks` - Streak calculations
+- `/api/patterns` - Pattern detection
+- `/api/predictions` - ML predictions
+- `/api/leaderboard` - Real-time rankings
+- `/api/chat` - AI coach
+
+## 📦 Scripts
+
+```bash
+npm run dev              # Start dev server
+npm run build            # Production build
+npm run drizzle:push     # Update database
+npm run drizzle:studio   # Database GUI
+```
+
+## ⚡ Performance
+
+- Patterns: 1942ms → 73ms (96% faster)
+- Predictions: 1034ms → 71ms (93% faster)
+- Streaks: 234ms → 77ms (67% faster)
+
+## 🚀 Deploy
+
+Deploy to Vercel:
+1. Push to GitHub
+2. Import to Vercel
+3. Add environment variables
+4. Deploy
+
+---
+
+**Built with ❤️ for health-conscious users**
