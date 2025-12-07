@@ -13,5 +13,17 @@ export const healthRecords = sqliteTable('HealthRecord', {
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
 })
 
+export const streaks = sqliteTable('Streak', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  currentStreak: integer('currentStreak').default(0).notNull(),
+  longestStreak: integer('longestStreak').default(0).notNull(),
+  lastActiveDate: text('lastActiveDate'), // ISO date string
+  streakStartDate: text('streakStartDate'), // ISO date string - when current streak started
+  createdAt: integer('createdAt', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer('updatedAt', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+})
+
 export type HealthRecord = typeof healthRecords.$inferSelect
 export type NewHealthRecord = typeof healthRecords.$inferInsert
+export type Streak = typeof streaks.$inferSelect
+export type NewStreak = typeof streaks.$inferInsert

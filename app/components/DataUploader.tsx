@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Papa from "papaparse";
+import { CheckCircle2 } from "lucide-react";
 
 interface DataUploaderProps {
   onDataLoaded: (data: any[], fileName: string) => void;
@@ -244,7 +245,10 @@ export default function DataUploader({ onDataLoaded }: DataUploaderProps) {
           />
 
           {fileName && (
-            <p className="text-sm text-green-600 mt-2">✅ Uploaded: {fileName}</p>
+            <p className="text-sm text-green-600 mt-2 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              Uploaded: {fileName}
+            </p>
           )}
 
           <p className="text-xs text-gray-500 mt-3">

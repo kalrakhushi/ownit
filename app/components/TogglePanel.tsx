@@ -12,6 +12,7 @@ export default function TogglePanel({ onToggleChange }: TogglePanelProps) {
     { key: "ml", label: "AI Model" },
     { key: "mood", label: "Mood Reflection" },
     { key: "goals", label: "Goals" },
+    { key: "coach", label: "Personal Coach" },
   ];
 
   return (

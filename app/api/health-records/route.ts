@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { healthRecords } from '@/drizzle/schema'
 import { desc } from 'drizzle-orm'
+import { updateStreaks } from '@/lib/streak-utils'
 
 // GET - Fetch all health records
 export async function GET() {
@@ -62,6 +63,9 @@ export async function POST(request: NextRequest) {
     
     // Insert records
     const createdRecords = await db.insert(healthRecords).values(recordsToInsert).returning()
+    
+    // Update streaks after adding new records
+    await updateStreaks()
     
     // Format response
     const formattedRecords = createdRecords.map((record) => ({
